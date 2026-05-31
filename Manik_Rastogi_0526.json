@@ -1,0 +1,151 @@
+{
+  "selectedTemplate": 2,
+  "headings": {
+    "skills": "Technical Skills",
+    "projects": "Projects",
+    "awards": "Achievements",
+    "work": "Professional Experience"
+  },
+  "basics": {
+    "name": "Manik Rastogi",
+    "email": "manik3112@gmail.com",
+    "phone": "9808136139",
+    "location": {
+      "address": "Moradabad, Uttar Pradesh"
+    },
+    "website": "https://www.github.com/Manik3112"
+  },
+  "education": [
+    {
+      "institution": "DIT University",
+      "area": "Computer Science Engineering",
+      "studyType": "B.Tech",
+      "startDate": "2015",
+      "endDate": "2019",
+      "gpa": "",
+      "location": "Dehradun, Uttarakhand"
+    }
+  ],
+  "work": [
+    {
+      "company": "SaaSlabs",
+      "location": "Remote",
+      "position": "Staff Engineer",
+      "startDate": "2024",
+      "endDate": "Present",
+      "highlights": [
+        "Owned and led development of ServiceAgent product end-to-end, including architecture, backend systems, authentication flows and shared platform modules.",
+        "Designed and developed a centralized authentication package using JWT-based authentication with rotating CSRF token strategy for secure multi-service integrations.",
+        "Built a reusable appointment scheduling npm package inspired by Cal.com architecture, designed to work across multiple products with isolated databases.",
+        "Built reusable npm packages adopted across multiple services to standardize business logic and accelerate development.",
+        "Led backend architecture discussions, production deployments and cross-team technical coordination for scalable TypeScript/NestJS services.",
+        "Worked on scalable distributed backend systems using TypeScript, NestJS, Redis and event-driven design patterns."
+      ]
+    },
+    {
+      "company": "Bajaj Finserv Health Limited",
+      "location": "Pune, Maharashtra",
+      "position": "Backend Lead",
+      "startDate": "June 2021",
+      "endDate": "2024",
+      "highlights": [
+        "Led ABDM/ABHA/HPR/HFR integrations for DRx platform under National Health Authority initiatives.",
+        "Designed scalable solutions for SCMD and SDMC workflows to support multi-clinic and multi-doctor operational models.",
+        "Implemented scalable backend design patterns including Callback Pattern and Facade Pattern for reusable workflows."
+      ]
+    },
+    {
+      "company": "Jungle Works",
+      "location": "Chandigarh",
+      "position": "Software Engineer",
+      "startDate": "June 2019",
+      "endDate": "June 2021",
+      "highlights": [
+        "Worked on Tookan, a large-scale delivery management platform used by global businesses for logistics and workforce management.",
+        "Designed and developed ACL systems to provide granular access control across derived but independent business entities.",
+        "Integrated backend services with POS systems, payment gateways, accounting software and eCommerce platforms."
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages & Backend",
+      "keywords": [
+        "TypeScript",
+        "JavaScript",
+        "Node.js",
+        "NestJS",
+        "Express.js",
+        "REST APIs",
+        "System Design",
+        "Microservices"
+      ]
+    },
+    {
+      "name": "Frontend",
+      "keywords": [
+        "React.js",
+        "HTML",
+        "CSS"
+      ]
+    },
+    {
+      "name": "Databases & Caching",
+      "keywords": [
+        "MySQL",
+        "PostgreSQL",
+        "MongoDB",
+        "Redis"
+      ]
+    },
+    {
+      "name": "Cloud & Infrastructure",
+      "keywords": [
+        "AWS",
+        "Google Cloud Platform",
+        "Linux",
+        "Nginx",
+        "PubSub"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Scheduler System",
+      "keywords": [
+        "TypeScript",
+        "MongoDB",
+        "Redis",
+        "System Design"
+      ],
+      "description": "Scalable multi-calendar appointment scheduling system with timezone-aware booking support."
+    },
+    {
+      "name": "UHI Hackathon - Smart EMR",
+      "keywords": [
+        "TypeScript",
+        "MongoDB",
+        "Node.js"
+      ],
+      "description": "Modular Smart EMR platform built during NHA Hackathon",
+      "url": "https://github.com/Manik3112/uhi-hackathon"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Winner - NHA UHI Hackathon",
+      "date": "August 2022",
+      "awarder": "National Health Authority",
+      "summary": "Built an award-winning Smart EMR solution during the NHA UHI Hackathon."
+    }
+  ],
+  "sections": [
+    "templates",
+    "profile",
+    "education",
+    "work",
+    "skills",
+    "projects",
+    "awards"
+  ]
+}
