@@ -26,18 +26,23 @@
   ],
   "work": [
     {
-      "company": "SaaSlabs",
+      "company": "SaaSlabs (JustCall)",
       "location": "Noida, Uttar Pradesh ",
       "position": "Staff Engineer",
       "startDate": "2024",
       "endDate": "Present",
       "highlights": [
-        "Owned architecture and backend development of ServiceAgent, including authentication, platform modules and service integrations.",
-        "Built a centralized authentication platform using JWT authentication and rotating CSRF tokens for secure multi-service communication.",
-        "Built a reusable multi-calendar scheduling package inspired by Cal.com with timezone-aware booking and isolated multi-tenant databases.",
-        "Designed reusable backend packages across services to standardize workflows and improve engineering velocity.",
-        "Led backend architecture discussions and deployment planning for scalable TypeScript/NestJS distributed systems.",
-        "Built distributed backend systems using TypeScript, NestJS, Redis and event-driven design patterns."
+        "Designed and developed reusable multi-calendar scheduling infrastructure inspired by Cal.com with timezone-aware booking and isolated multi-tenant databases, adopted across JustCall and ServiceAgent.",
+
+        "Built reusable backend platform modules and npm packages adopted across 7+ microservices to standardize workflows and improve engineering velocity.",
+
+        "Built a centralized authentication platform using JWT authentication and rotating CSRF tokens for secure multi-service communication, handling ~7M authentication requests daily.",
+
+        "Improved distributed service reliability and horizontal scalability by tuning Kubernetes resource allocation and autoscaling thresholds based on Grafana performance metrics.",
+
+        "Owned architecture and backend development of ServiceAgent, including authentication, platform modules and distributed service integrations.",
+
+        "Designed distributed backend systems using TypeScript, NestJS, Redis and event-driven patterns supporting integrations across React, PHP and multi-service ecosystems."
       ]
     },
     {
@@ -100,20 +105,9 @@
   ],
   "projects": [
     {
-      "name": "Scheduler System",
-      "keywords": [
-        "TypeScript",
-        "MongoDB",
-        "Redis",
-        "Distributed Systems",
-        "System Design"
-      ],
-      "description": "Scalable multi-calendar scheduling system with timezone-aware booking support."
-    },
-    {
       "name": "UHI Hackathon - Smart EMR",
       "keywords": ["TypeScript", "MongoDB", "Node.js"],
-      "description": "Modular Smart EMR platform built during NHA UHI Hackathon.",
+      "description": "A modular Smart EMR platform built during the NHA UHI Hackathon with reusable backend architecture and scalable healthcare workflows.",
       "url": "https://github.com/Manik3112/uhi-hackathon"
     }
   ],
