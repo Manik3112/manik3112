@@ -10,10 +10,8 @@
     "name": "Manik Rastogi",
     "email": "manik3112@gmail.com",
     "phone": "9808136139",
-    "location": {
-      "address": "Moradabad, Uttar Pradesh"
-    },
-    "website": "https://www.github.com/Manik3112"
+    "location": { "address": "Moradabad, Uttar Pradesh" },
+    "website": "https://github.com/Manik3112"
   },
   "education": [
     {
@@ -29,17 +27,17 @@
   "work": [
     {
       "company": "SaaSlabs",
-      "location": "Remote",
+      "location": "Noida, Uttar Pradesh ",
       "position": "Staff Engineer",
       "startDate": "2024",
       "endDate": "Present",
       "highlights": [
-        "Owned and led development of ServiceAgent product end-to-end, including architecture, backend systems, authentication flows and shared platform modules.",
-        "Designed and developed a centralized authentication package using JWT-based authentication with rotating CSRF token strategy for secure multi-service integrations.",
-        "Built a reusable appointment scheduling npm package inspired by Cal.com architecture, designed to work across multiple products with isolated databases.",
-        "Built reusable npm packages adopted across multiple services to standardize business logic and accelerate development.",
-        "Led backend architecture discussions, production deployments and cross-team technical coordination for scalable TypeScript/NestJS services.",
-        "Worked on scalable distributed backend systems using TypeScript, NestJS, Redis and event-driven design patterns."
+        "Owned architecture and backend development of ServiceAgent, including authentication, platform modules and service integrations.",
+        "Built a centralized authentication platform using JWT authentication and rotating CSRF tokens for secure multi-service communication.",
+        "Built a reusable multi-calendar scheduling package inspired by Cal.com with timezone-aware booking and isolated multi-tenant databases.",
+        "Designed reusable backend packages across services to standardize workflows and improve engineering velocity.",
+        "Led backend architecture discussions and deployment planning for scalable TypeScript/NestJS distributed systems.",
+        "Built distributed backend systems using TypeScript, NestJS, Redis and event-driven design patterns."
       ]
     },
     {
@@ -49,9 +47,9 @@
       "startDate": "June 2021",
       "endDate": "2024",
       "highlights": [
-        "Led ABDM/ABHA/HPR/HFR integrations for DRx platform under National Health Authority initiatives.",
-        "Designed scalable solutions for SCMD and SDMC workflows to support multi-clinic and multi-doctor operational models.",
-        "Implemented scalable backend design patterns including Callback Pattern and Facade Pattern for reusable workflows."
+        "Led ABDM/ABHA/HPR/HFR healthcare integrations for DRx platform under National Health Authority initiatives.",
+        "Designed scalable backend workflows supporting multi-clinic and multi-doctor operational models with reusable service abstractions and asynchronous processing patterns.",
+        "Implemented scalable backend design patterns including Callback Pattern and Facade Pattern to improve modularity and reusability."
       ]
     },
     {
@@ -61,9 +59,9 @@
       "startDate": "June 2019",
       "endDate": "June 2021",
       "highlights": [
-        "Worked on Tookan, a large-scale delivery management platform used by global businesses for logistics and workforce management.",
+        "Worked on Tookan, a large-scale logistics and delivery management platform used globally for workforce and operations management.",
         "Designed and developed ACL systems to provide granular access control across derived but independent business entities.",
-        "Integrated backend services with POS systems, payment gateways, accounting software and eCommerce platforms."
+        "Integrated backend services with POS systems, payment gateways, accounting platforms and eCommerce services."
       ]
     }
   ],
@@ -75,28 +73,18 @@
         "JavaScript",
         "Node.js",
         "NestJS",
-        "Express.js",
         "REST APIs",
-        "System Design",
-        "Microservices"
+        "Microservices",
+        "System Design"
       ]
     },
     {
       "name": "Frontend",
-      "keywords": [
-        "React.js",
-        "HTML",
-        "CSS"
-      ]
+      "keywords": ["React.js", "Tailwind CSS", "Shadcn UI", "HTML", "CSS"]
     },
     {
       "name": "Databases & Caching",
-      "keywords": [
-        "MySQL",
-        "PostgreSQL",
-        "MongoDB",
-        "Redis"
-      ]
+      "keywords": ["PostgreSQL", "MySQL", "MongoDB", "Redis"]
     },
     {
       "name": "Cloud & Infrastructure",
@@ -105,7 +93,8 @@
         "Google Cloud Platform",
         "Linux",
         "Nginx",
-        "PubSub"
+        "Pub/Sub",
+        "CI/CD"
       ]
     }
   ],
@@ -116,18 +105,15 @@
         "TypeScript",
         "MongoDB",
         "Redis",
+        "Distributed Systems",
         "System Design"
       ],
-      "description": "Scalable multi-calendar appointment scheduling system with timezone-aware booking support."
+      "description": "Scalable multi-calendar scheduling system with timezone-aware booking support."
     },
     {
       "name": "UHI Hackathon - Smart EMR",
-      "keywords": [
-        "TypeScript",
-        "MongoDB",
-        "Node.js"
-      ],
-      "description": "Modular Smart EMR platform built during NHA Hackathon",
+      "keywords": ["TypeScript", "MongoDB", "Node.js"],
+      "description": "Modular Smart EMR platform built during NHA UHI Hackathon.",
       "url": "https://github.com/Manik3112/uhi-hackathon"
     }
   ],
@@ -136,7 +122,7 @@
       "title": "Winner - NHA UHI Hackathon",
       "date": "August 2022",
       "awarder": "National Health Authority",
-      "summary": "Built an award-winning Smart EMR solution during the NHA UHI Hackathon."
+      "summary": "Built an award-winning Smart EMR solution during the National Health Authority UHI Hackathon."
     }
   ],
   "sections": [
