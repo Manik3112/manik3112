@@ -1,5 +1,5 @@
 {
-  "selectedTemplate": 2,
+  "selectedTemplate": 1,
   "headings": {
     "skills": "Technical Skills",
     "projects": "Projects",
@@ -10,7 +10,9 @@
     "name": "Manik Rastogi",
     "email": "manik3112@gmail.com",
     "phone": "9808136139",
-    "location": { "address": "Moradabad, Uttar Pradesh" },
+    "location": {
+      "address": "Moradabad, Uttar Pradesh"
+    },
     "website": "https://github.com/Manik3112"
   },
   "education": [
@@ -32,16 +34,12 @@
       "startDate": "2024",
       "endDate": "Present",
       "highlights": [
+        "Built automated benchmarking systems to compare AI agent behavior across model and feature iterations, generating quality metrics and performance insights that guided production releases.",
         "Designed and developed reusable multi-calendar scheduling infrastructure inspired by Cal.com with timezone-aware booking and isolated multi-tenant databases, adopted across two independent products: JustCall and ServiceAgent.",
-
         "Built reusable backend platform modules and npm packages adopted across 5+ microservices to standardize workflows and improve engineering velocity.",
-
         "Built a centralized authentication platform using JWT authentication and rotating CSRF tokens for secure multi-service communication, handling ~7M authentication requests daily.",
-
         "Improved distributed service reliability and horizontal scalability by tuning Kubernetes resource allocation and autoscaling thresholds based on Grafana performance metrics.",
-
         "Owned architecture and backend development of ServiceAgent, including authentication, platform modules and distributed service integrations.",
-
         "Designed distributed backend systems using TypeScript, NestJS, Redis and event-driven patterns supporting integrations across React, PHP and multi-service ecosystems."
       ]
     },
@@ -64,9 +62,8 @@
       "startDate": "June 2019",
       "endDate": "June 2021",
       "highlights": [
-        "Worked on Tookan, a large-scale logistics and delivery management platform used globally for workforce and operations management.",
-        "Designed and developed ACL systems to provide granular access control across derived but independent business entities.",
-        "Integrated backend services with POS systems, payment gateways, accounting platforms and eCommerce services."
+        "Developed and scaled backend services for Tookan, a globally used logistics and delivery management platform supporting workforce and operational workflows.",
+        "Architected fine-grained ACL authorization systems and led integrations with external business platforms including POS, payment, accounting, and eCommerce systems."
       ]
     }
   ],
@@ -122,10 +119,10 @@
   "sections": [
     "templates",
     "profile",
-    "education",
     "work",
     "skills",
+    "awards",
     "projects",
-    "awards"
+    "education"
   ]
 }
