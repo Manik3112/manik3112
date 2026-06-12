@@ -31,8 +31,8 @@
       "company": "SaaSlabs (JustCall)",
       "location": "Noida, Uttar Pradesh ",
       "position": "Staff Engineer",
-      "startDate": "2024",
-      "endDate": "Present",
+      "startDate": "Nov 2023",
+      "endDate": "May 2026",
       "highlights": [
         "Built automated benchmarking systems to compare AI agent behavior across model and feature iterations, generating quality metrics and performance insights that guided production releases.",
         "Designed and developed reusable multi-calendar scheduling infrastructure inspired by Cal.com with timezone-aware booking and isolated multi-tenant databases, adopted across two independent products: JustCall and ServiceAgent.",
@@ -48,7 +48,7 @@
       "location": "Pune, Maharashtra",
       "position": "Backend Lead",
       "startDate": "June 2021",
-      "endDate": "2024",
+      "endDate": "Nov 2023",
       "highlights": [
         "Led ABDM/ABHA/HPR/HFR healthcare integrations for DRx platform under National Health Authority initiatives.",
         "Designed scalable backend workflows supporting multi-clinic and multi-doctor operational models with reusable service abstractions and asynchronous processing patterns.",
@@ -82,11 +82,22 @@
     },
     {
       "name": "Frontend",
-      "keywords": ["React.js", "Tailwind CSS", "Shadcn UI", "HTML", "CSS"]
+      "keywords": [
+        "React.js",
+        "Tailwind CSS",
+        "Shadcn UI",
+        "HTML",
+        "CSS"
+      ]
     },
     {
       "name": "Databases & Caching",
-      "keywords": ["PostgreSQL", "MySQL", "MongoDB", "Redis"]
+      "keywords": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Redis"
+      ]
     },
     {
       "name": "Cloud & Infrastructure",
@@ -103,15 +114,18 @@
   "projects": [
     {
       "name": "UHI Hackathon - Smart EMR",
-      "keywords": ["TypeScript", "MongoDB", "Node.js"],
-      "description": "A modular Smart EMR platform built during the NHA UHI Hackathon with reusable backend architecture and scalable healthcare workflows.",
-      "url": "https://github.com/Manik3112/uhi-hackathon"
+      "keywords": [
+        "(TypeScript",
+        "MongoDB",
+        "Node.js)"
+      ],
+      "description": "A modular Smart EMR platform built during the NHA UHI Hackathon with reusable backend architecture and scalable healthcare workflows."
     }
   ],
   "awards": [
     {
       "title": "Winner - NHA UHI Hackathon",
-      "date": "August 2022",
+      "date": "Aug'22",
       "awarder": "National Health Authority",
       "summary": "Built an award-winning Smart EMR solution during the National Health Authority UHI Hackathon."
     }
