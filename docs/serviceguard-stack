@@ -1,0 +1,456 @@
+# Stop Trusting Your Internal APIs: Building Zero-Trust Authentication for Node.js Microservices
+
+> Most internal APIs are protected by network boundaries and API keys. But how do you know a request was not modified, replayed, or sent to the wrong service?
+
+In modern architectures, applications are increasingly split into multiple services.
+
+A typical setup looks like this:
+
+* API Gateway
+* Payment Service
+* User Service
+* Notification Service
+* Order Service
+
+These services communicate over HTTP inside private networks such as:
+
+* Kubernetes clusters
+* Docker networks
+* Cloud VPCs
+* Internal load balancers
+
+A common assumption is:
+
+> "The request is coming from inside the network, so it must be trusted."
+
+This assumption creates a weak security model.
+
+---
+
+# The Problem with Traditional Internal Authentication
+
+Many teams use API keys or shared headers between services.
+
+For example:
+
+```http
+Authorization: API_KEY_123
+```
+
+The architecture looks like this:
+
+```mermaid
+flowchart LR
+    Gateway[API Gateway] -->|HTTP Request + API Key| Payment[Payment Service]
+
+    Payment --> Decision{
+        Can we trust this request?
+    }
+
+    Decision --> Identity[Caller identity known ✅]
+    Decision --> Integrity[Request integrity unknown ❌]
+    Decision --> Replay[Replay protection unknown ❌]
+```
+
+The API key only answers one question:
+
+> Which service knows this secret?
+
+It does **not** answer:
+
+* Was the HTTP request modified?
+* Was the request intended for this service?
+* Has this request already been processed?
+* Is the request still within an acceptable time window?
+
+---
+
+# The Replay Attack Problem
+
+Consider a payment request.
+
+```http
+POST /payments
+
+{
+    "amount": 100,
+    "currency": "USD"
+}
+```
+
+The API Gateway sends:
+
+```http
+Authorization: API_KEY_123
+```
+
+Everything works normally.
+
+However, if somebody captures this request, it can be replayed.
+
+```mermaid
+sequenceDiagram
+    participant Gateway
+    participant Payment Service
+    participant Attacker
+
+    Gateway ->> Payment Service: POST /payments<br/>Authorization: API Key
+
+    Note over Attacker: Captures request
+
+    Attacker ->> Payment Service: Replays the same request
+
+    Payment Service -->> Attacker: Accepted ❌
+```
+
+The Payment Service has no way to distinguish:
+
+* A legitimate request
+* A replay of an earlier request
+
+---
+
+# A Better Approach: Signed Request Envelopes
+
+Instead of sending only a secret, we can create a cryptographically signed envelope containing details about the request.
+
+The envelope contains:
+
+* `iss` — Which service created the request
+* `aud` — Which service should receive the request
+* `iat` — Time when the token was created
+* `exp` — Token expiration time
+* `jti` — Unique request identifier
+* HTTP method
+* HTTP path
+* Request body hash
+
+Visually:
+
+```mermaid
+flowchart TB
+    Request[HTTP Request] --> Envelope[JWT Request Envelope]
+
+    Envelope --> Issuer[iss: api-gateway]
+    Envelope --> Audience[aud: payment-service]
+    Envelope --> Timestamp[iat / exp]
+    Envelope --> JTI[jti: Unique request ID]
+    Envelope --> Method[HTTP Method]
+    Envelope --> Path[Request Path]
+    Envelope --> Body[Body Hash]
+
+    Envelope --> Signature[HMAC SHA-256 Signature]
+```
+
+The entire envelope is signed using a shared secret.
+
+If anyone modifies:
+
+* The HTTP method
+* The path
+* The body
+* The issuer
+* The audience
+
+The signature becomes invalid.
+
+---
+
+# The Request Flow
+
+The complete communication flow now looks like this:
+
+```mermaid
+sequenceDiagram
+    participant Gateway
+    participant ServiceGuard
+    participant Payment Service
+
+    Gateway ->> ServiceGuard: Create signed request token
+
+    ServiceGuard -->> Gateway: Signed JWT
+
+    Gateway ->> Payment Service: POST /payments<br/>Authorization: Bearer JWT
+
+    Payment Service ->> ServiceGuard: Validate request
+
+    ServiceGuard -->> Payment Service: Request authenticated ✅
+```
+
+The receiving service no longer trusts the network.
+
+It trusts only a request that can prove:
+
+* Who created it
+* Where it is intended to go
+* What data it contains
+* That it has not expired
+* That it has not already been processed
+
+---
+
+# The Validation Pipeline
+
+When a request reaches a service, it goes through multiple security checks.
+
+```mermaid
+flowchart TD
+    Start[Incoming HTTP Request]
+        --> Extract[Extract JWT Token]
+        --> Signature[Verify HMAC Signature]
+        --> Issuer[Validate Trusted Issuer]
+        --> Audience[Validate Audience]
+        --> Expiry[Check Token Expiration]
+        --> Method[Validate HTTP Method]
+        --> Path[Validate Request Path]
+        --> Body[Validate Request Body Hash]
+        --> Nonce[Check Nonce Store]
+        --> Success[Accept Request ✅]
+```
+
+Every validation step adds another layer of defense.
+
+For example:
+
+* A valid token cannot be used against a different service.
+* A `POST` request cannot be changed to `DELETE`.
+* The request body cannot be modified.
+* An expired token is rejected.
+* A previously used request can be detected.
+
+---
+
+# Preventing Replay Attacks
+
+Even with signed requests, a captured token could still be reused until it expires.
+
+For example:
+
+```
+Valid token lifetime: 30 seconds
+
+Attacker captures token
+          |
+          |
+          v
+Reuses same token within 30 seconds
+```
+
+To solve this problem, every request includes a unique `jti` (JWT ID).
+
+The receiver stores the `jti` for the remaining lifetime of the token.
+
+The first request:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Service
+    participant Redis
+
+    Client ->> Service: Request with jti=abc123
+
+    Service ->> Redis: SET nonce:abc123 1 NX EX 30
+
+    Redis -->> Service: OK
+
+    Service -->> Client: Request Accepted ✅
+```
+
+A replay of the same request:
+
+```mermaid
+sequenceDiagram
+    participant Attacker
+    participant Service
+    participant Redis
+
+    Attacker ->> Service: Replay request with jti=abc123
+
+    Service ->> Redis: SET nonce:abc123 1 NX EX 30
+
+    Redis -->> Service: Already Exists
+
+    Service -->> Attacker: REPLAY_DETECTED ❌
+```
+
+The important detail is the `SET NX EX` operation.
+
+It performs an atomic operation:
+
+* Store the nonce.
+* Reject the operation if it already exists.
+* Automatically expire the nonce after the token lifetime.
+
+This prevents race conditions where two identical requests arrive at the same time.
+
+---
+
+# Introducing ServiceGuard Stack
+
+This idea became **ServiceGuard Stack**, an open-source Node.js library for secure service-to-service communication.
+
+The goal was simple:
+
+> Bring AWS Signature Version 4 style authentication principles to everyday Node.js microservices.
+
+ServiceGuard Stack provides:
+
+* HMAC SHA-256 signed request envelopes
+* Service identity verification
+* Audience validation
+* HTTP method protection
+* Request path validation
+* Deterministic request body hashing
+* Short-lived authentication tokens
+* Replay protection using pluggable nonce stores
+* Express middleware
+* NestJS guards
+* Fastify hooks
+* TypeScript support
+* Zero runtime dependencies
+
+---
+
+# Creating a Signed Request
+
+Creating a request token requires a service identity and a shared secret.
+
+```ts
+import { Create } from "serviceguard-stack";
+
+const guard = new Create({
+    issuer: "api-gateway",
+    audiences: ["payment-service"],
+    secret: process.env.GATEWAY_SECRET!,
+});
+
+const body = {
+    amount: 100,
+    currency: "USD",
+};
+
+const token = guard.execute({
+    request: {
+        method: "POST",
+        path: "/payments",
+        body,
+    },
+});
+```
+
+---
+
+# Sending the Request with Axios
+
+The generated token is included in the `Authorization` header.
+
+```ts
+import axios from "axios";
+
+await axios.post(
+    "http://payment-service/payments",
+    body,
+    {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+);
+```
+
+The receiving service can now verify that:
+
+* The request originated from a trusted service.
+* The request was intended for it.
+* The request has not been modified.
+
+---
+
+# Validating Incoming Requests
+
+With Express, validation can be added globally as middleware.
+
+```ts
+import express from "express";
+import { expressMiddleware } from "serviceguard-stack";
+
+const app = express();
+
+app.use(
+    expressMiddleware({
+        currentService: "payment-service",
+        trustedIssuers: {
+            "api-gateway": process.env.GATEWAY_SECRET!,
+        },
+    })
+);
+```
+
+From this point, every incoming request is validated automatically.
+<html><head></head><body><h1>Security Is About Layers</h1><p>One common misunderstanding is assuming that request signing replaces HTTPS.</p><p>It does not.</p><p>HTTPS and ServiceGuard Stack solve different problems.</p><pre><code class="language-mermaid">flowchart TB
+    Client[Service A]
+        --&gt; TLS[HTTPS / TLS Encryption]
+
+    TLS --&gt; ServiceGuard[ServiceGuard Stack Validation]
+
+    ServiceGuard --&gt; ServiceB[Service B]
+
+    TLS -.-&gt; Confidentiality[
+        Confidentiality
+        Prevents network eavesdropping
+    ]
+
+    ServiceGuard -.-&gt; Integrity[
+        Authenticity &amp; Integrity
+        Prevents tampering and replay
+    ]
+</code></pre><p>Use both together:</p><ul><li><p>HTTPS protects the communication channel.</p></li><li><p>ServiceGuard Stack protects the authenticity and integrity of each request.</p></li></ul><hr><h1>What Threats Does It Protect Against?</h1>
+Threat | Protected
+-- | --
+Modified HTTP method | ✅ Yes
+Modified request path | ✅ Yes
+Modified request body | ✅ Yes
+JWT tampering | ✅ Yes
+Requests sent to the wrong service | ✅ Yes
+Expired tokens | ✅ Yes
+Replay attacks | ✅ Yes (with a NonceStore)
+Network eavesdropping | ❌ Use HTTPS/TLS
+Compromised service with valid secrets | ❌ Outside the scope
+Secret leakage | ❌ Requires secret management
+
+<hr><h1>When Should You Use ServiceGuard Stack?</h1><p>ServiceGuard Stack is designed for <strong>internal service-to-service communication</strong>.</p><p>It is a good fit for:</p><ul><li><p>API Gateway → Internal Services</p></li><li><p>Microservice architectures</p></li><li><p>Kubernetes workloads</p></li><li><p>Backend services communicating over HTTP</p></li><li><p>Zero-trust internal networks</p></li></ul><p>Typical architecture:</p><pre><code class="language-mermaid">flowchart LR
+    Gateway[API Gateway]
+        --&gt; Users[User Service]
+
+    Gateway
+        --&gt; Payments[Payment Service]
+
+    Gateway
+        --&gt; Notifications[Notification Service]
+
+    Gateway -. Signed Request Envelope .-&gt; Users
+    Gateway -. Signed Request Envelope .-&gt; Payments
+    Gateway -. Signed Request Envelope .-&gt; Notifications
+</code></pre><hr><h1>When Should You Not Use It?</h1><p>ServiceGuard Stack is <strong>not intended for:</strong></p><ul><li><p>User authentication</p></li><li><p>Browser sessions</p></li><li><p>OAuth replacement</p></li><li><p>Public API authorization</p></li></ul><p>For example:</p><pre><code class="language-text">User Browser
+      |
+      |
+ OAuth / OpenID Connect
+      |
+      v
+ Backend APIs
+</code></pre><p>ServiceGuard Stack operates <strong>between trusted backend services</strong>, not between end users and applications.</p><hr><h1>Why Not Just Use JWT?</h1><p>JWTs are often associated with user authentication.</p><p>A typical user JWT contains claims like:</p><pre><code class="language-json">{
+    "userId": "123",
+    "role": "admin"
+}
+</code></pre><p>This answers:</p><blockquote><p>Who is the user?</p></blockquote><p>But internal services need additional guarantees:</p><ul><li><p>Who created this request?</p></li><li><p>Which service should receive it?</p></li><li><p>Has the HTTP request changed?</p></li><li><p>Is this request still valid?</p></li><li><p>Has this exact request already been processed?</p></li></ul><p>ServiceGuard Stack adds request-level trust by binding the token to:</p><ul><li><p>HTTP method</p></li><li><p>Request path</p></li><li><p>Request body hash</p></li><li><p>Short-lived timestamps</p></li><li><p>Unique request identifiers (<code>jti</code>)</p></li></ul><hr><h1>Design Philosophy</h1><p>ServiceGuard Stack follows a few important principles.</p><h2>1. No Infrastructure Lock-In</h2><p>Replay protection is implemented through a simple <code>NonceStore</code> interface.</p><p>You can use:</p><ul><li><p>Redis</p></li><li><p>In-memory storage for development</p></li><li><p>Databases</p></li><li><p>Any custom distributed cache</p></li></ul><p>The library does not force a Redis dependency.</p><hr><h2>2. Secure by Default</h2><p>A valid request must satisfy all checks:</p><pre><code class="language-mermaid">flowchart TD
+    Request[Incoming Request]
+        --&gt; Signature[Valid Signature]
+        --&gt; Issuer[Trusted Issuer]
+        --&gt; Audience[Correct Audience]
+        --&gt; Expiry[Token Not Expired]
+        --&gt; Binding[Request Matches Token]
+        --&gt; Replay[Nonce Not Previously Used]
+        --&gt; Accept[Request Accepted]
+</code></pre><p>A failure in any step causes the request to be rejected.</p><hr><h2>3. Lightweight and Framework Agnostic</h2><p>ServiceGuard Stack provides adapters for:</p><ul><li><p>Express</p></li><li><p>NestJS</p></li><li><p>Fastify</p></li></ul><p>while keeping the core authentication logic independent of any framework.</p><hr><h1>Final Thoughts</h1><p>As systems move toward distributed architectures, internal networks should no longer be considered automatically trustworthy.</p><p>A secure service should be able to answer:</p><ul><li><p><strong>Who created this request?</strong></p></li><li><p><strong>Is this request intended for me?</strong></p></li><li><p><strong>Has the request been modified?</strong></p></li><li><p><strong>Is the request still valid?</strong></p></li><li><p><strong>Has this request already been used?</strong></p></li></ul><p>ServiceGuard Stack was built around these principles.</p><p>By combining:</p><ul><li><p>HMAC SHA-256 signatures</p></li><li><p>Request-bound JWT envelopes</p></li><li><p>Short-lived tokens</p></li><li><p>Audience validation</p></li><li><p>Replay protection</p></li></ul><p>it brings a zero-trust approach to internal HTTP communication.</p><hr><h1>Try ServiceGuard Stack</h1><p>Install the package:</p><pre><code class="language-bash">npm install serviceguard-stack
+</code></pre><p>Explore the project:</p><ul><li><p>npm: <a href="https://www.npmjs.com/package/serviceguard-stack">https://www.npmjs.com/package/serviceguard-stack</a></p></li><li><p>GitHub: <a href="https://github.com/Manik3112/serviceguard-stack">https://github.com/Manik3112/serviceguard-stack</a></p></li></ul><p>Contributions, feedback, and security reviews are always welcome.</p><hr><p>If you are building microservices, stop asking:</p><blockquote><p>"Is this request coming from my network?"</p></blockquote><p>Start asking:</p><blockquote><p>"Can this request prove that it should be trusted?"</p></blockquote></body></html>
