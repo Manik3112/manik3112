@@ -33,6 +33,9 @@ Currently exploring:
 # 📦 Open Source Projects
 
 ## 🛡️ ServiceGuard Stack
+![npm](https://img.shields.io/npm/v/serviceguard-stack)
+![downloads](https://img.shields.io/npm/dm/serviceguard-stack)
+![license](https://img.shields.io/npm/l/serviceguard-stack)
 
 Zero-trust authentication for Node.js microservices using **HMAC-signed JWT request envelopes**.
 
